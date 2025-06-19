@@ -66,17 +66,28 @@ The following software tools, platforms, and databases were used to build and ru
 
 Before running any identification workflow, raw Nanopore reads are filtered and quality-checked using `NanoPlot` and `Filtlong`.
 
-### Installation
+### Installation/workflow
 
 Create a dedicated conda environment for QC tools:
 ```bash
 conda create -n QC_env nanoplot filtlong -c bioconda -c conda-forge
 conda activate QC_env
 
-### Step 1 – Visualize Raw Reads with NanoPlot
+# Visualize Raw Reads with NanoPlot
+
 ```bash
-for file in *.fastq; do
-    name="${file%.fastq}"
-    NanoPlot --fastq "$file" --outdir "plots_$name" --loglength --N50
+# Create an output directory for NanoPlot results
+mkdir -p nanoplot_samples
+
+# Loop through all FASTQ files in the input folder
+for file in project_data/*.fastq; do
+    # Get the filename without the extension
+    name=$(basename "$file" .fastq)
+
+    # Create a subfolder for each sample
+    mkdir -p "nanoplot_samples/$name"
+
+    # Run NanoPlot and output results into the subfolder
+    NanoPlot --fastq "$file" --outdir "nanoplot_samples/$name" --loglength --N50
 done
 
