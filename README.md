@@ -344,6 +344,8 @@ for i in $(seq -w 1 10); do
       --threads 8
 ```
 
+---
+
 ### wf-amplicon
 ### wf-amplicon (de novo and reference-based)
 wf-amplicon was used to reconstruct amplicons either:
