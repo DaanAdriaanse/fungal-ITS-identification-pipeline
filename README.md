@@ -137,6 +137,7 @@ for file in "$map"/barcode*_filtered.fastq; do
     NanoPlot --fastq "$file" --outdir "$map/$barcode" --plots hex dot --loglength --N50
 done
 ```
+
 --- 
 
 ## Sub-Workflow 1: Mapping & Specificity
@@ -323,10 +324,9 @@ It includes three main strategies:
 All commands are executed from the working directory:  
 `/mnt/studentfiles/2025/2025MBI06`
 
----
-
-### Flye Assembly
-### Install Flye
+## Flye
+### Flye installation
+Install Flye
 
 ```bash
 conda create -n flye_env -c bioconda -c conda-forge flye
@@ -344,10 +344,8 @@ for i in $(seq -w 1 10); do
       --threads 8
 ```
 
----
-
-### wf-amplicon
-### wf-amplicon (de novo and reference-based)
+## wfamplicon
+### de novo and reference-based
 wf-amplicon was used to reconstruct amplicons either:
 - Without a reference (de novo mode)
 - Using an ITS-region reference (variant calling mode)
@@ -391,5 +389,13 @@ for i in $(seq -w 1 10); do
 done
 ```
 
+### 4. ITS Region Extraction with ITSx
 
+ITSx was used to extract the Internal Transcribed Spacer (ITS) regions from consensus sequences obtained via:
+
+- `Flye` (de novo)
+- `wf-amplicon` (reference-based)
+- `wf-amplicon` (de novo)
+
+Each set of consensus FASTA sequences was processed separately. For each workflow, a new output directory was created.
 
