@@ -353,7 +353,7 @@ for i in $(seq -w 1 10); do
 done
 ```
 
-### wf-amplicon (de novo and reference-based)
+### Wf-amplicon (de novo and reference-based)
 wf-amplicon was used to reconstruct amplicons either:
 - Without a reference (de novo mode)
 - Using an ITS-region reference (variant calling mode)
