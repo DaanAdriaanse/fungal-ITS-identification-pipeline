@@ -1,6 +1,6 @@
 # fungal-ITS-identification-pipeline
 This repository contains a bioinformatics pipeline for fungal species identification based on Nanopore sequencing of PCR-amplified ITS regions from clinical fungal isolates.
-![image](https://github.com/user-attachments/assets/aad0ee9d-2e40-4e7a-9578-29545650b256)
+![image](https://github.com/user-attachments/assets/d78acfce-ede3-4ec1-9483-106b6c8d2090)
 
 ## Goal
 This study was initiated in order to investigate whether Nanopore sequencing of PCR-amplified ITS regions, using the primers ITS1-F_KYO2a and RCA95m, permits accurate fungal species identification from clinical fungal isolates. This approach serves as a model for evaluating the potential of ITS-based diagnostics in settings with degraded DNA, such as FFPE tissues, even though the current study focuses on DNA extracted from high-quality clinical fungal isolates.
