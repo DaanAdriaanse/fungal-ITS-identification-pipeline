@@ -37,6 +37,37 @@ Each step supports downstream analysis for high-quality Fungal isolates.
 ## Materials
 The following software tools, platforms, and databases were used to build and run the fungal ITS identification pipeline:
 
+### Input Data
+
+This project analyzed sequencing data from 10 clinically relevant fungal isolates. These isolates originated from pure cultures obtained from microbiology laboratories.
+
+- **Samples**: 10 fungal isolates from clinical origin
+- **Target region**: Internal Transcribed Spacer (ITS1–5.8S–ITS2)
+- **Primers used**:  
+  - Forward: `ITS1-F_KYO2a`  
+  - Reverse: `RCA95m`
+- **Sequencing platform**: Oxford Nanopore MinION
+- **Read type**: Single-end (FASTQ format)
+- **Read characteristics**:
+  - Mean read length: ~2,625 bp
+
+#### The 10 fungal species included:
+
+| Barcode | Species                    |
+|---------|----------------------------|
+| 01      | *Candida albicans*         |
+| 02      | *Cryptococcus neoformans*  |
+| 03      | *Lichtheimia ramosa*       |
+| 04      | *Trichosporon asahii*      |
+| 05      | *Candida tropicalis*       |
+| 06      | *Trichophyton indotineae*  |
+| 07      | *Aspergillus fumigatus*    |
+| 08      | *Candida parapsilosis*     |
+| 09      | *Aspergillus flavus*       |
+| 10      | *Malassezia pachydermatis* |
+
+Each isolate was sequenced separately using a unique barcode. FASTQ data was quality filtered and then subjected to different analysis branches including direct taxonomic classification (via EMU) and consensus-based/convertfasta-based workflows (Flye, wf-amplicon, convertfasta).
+
 ### Software Tools
 - `Filtlong` – for quality filtering of Nanopore reads  
 - `NanoPlot` – for sequencing QC and length distribution plots  
