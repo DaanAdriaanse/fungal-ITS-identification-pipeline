@@ -14,7 +14,7 @@ This study was initiated in order to investigate whether Nanopore sequencing of 
   - [Preprocessing: Read Filtering & Quality Control](#preprocessing-read-filtering--quality-control)
   - [Sub-Workflow 1: Mapping & Specificity](#sub-workflow-1-mapping--specificity)
   - [Sub-Workflow 2: GermGenie](#sub-workflow-2-germgenie)
-  - [Sub-Workflow 3: Consensus-Based/convertfasta-based Identification](#sub-workflow-3-consensus-based-identification)
+  - [Sub-Workflow 3: Consensus-Based/convertfasta-based Identification](#sub-workflow-3-consensus-basedconvertfasta-based-identification)
 - [Output Structure](#output-structure)
 - [Interpretation of Results](#interpretation-of-results)
 - [Acknowledgements](#acknowledgements)
