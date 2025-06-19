@@ -536,6 +536,7 @@ for folder in "$ITS_DIR"/barcode*/; do
 done
 ```
 
+--- 
 
 ## Output Structure
 Each sub-workflow produces its own organized set of results, stored in dedicated directories per sample (barcode01 to barcode10). Below is an overview of the key output folders:
@@ -595,11 +596,11 @@ Each sub-workflow produces its own organized set of results, stored in dedicated
   BLASTn results from querying extracted ITS regions (from ITSx) against the UNITE+INSD fungal ITS database.
 
 
+--- 
+
 ## Interpretation of Results
 
 The output files of each sub-workflow provide distinct types of biological and technical insight into the fungal ITS sequencing analysis. Below is a detailed explanation of how to interpret the most important result types.
-
----
 
 ### Quality Control (NanoPlot)
 
@@ -610,20 +611,28 @@ Each sample includes a `NanoStats.txt` file with summary statistics. Example fie
 - **N50**: Length at which 50% of total bases are in reads of this size or longer.
 - **Quality cutoffs (Q15, Q20, Q25, etc.)**: Percentages of reads exceeding each quality threshold.
 
+**Interpretation:**  
+High-quality samples typically show:
+- Mean read length >2000 bp
+- Q ≥ 15
 Use this to confirm if samples are of sufficient quality for downstream ITS analysis.
 
 
 ### Taxonomic Classification (EMU via GermGenie)
+The `emu` output includes a tab-separated table with taxonomic ranks and **relative abundance per barcode**:
 
-Each sample outputs a `.tsv` file with predicted taxa and relative abundances. Important columns:
+| tax_id | abundance | genus      | species          |
+|--------|-----------|------------|------------------|
+| 53     | 0.7783    | Candida    | Candida albicans |
+| 3127   | 0.1188    | Candida    | -                |
 
-- `tax_id` – NCBI Taxonomy ID
-- `abundance` – Relative abundance (0–1 scale)
-- `superkingdom`, `phylum`, `class`, `genus`, `species` – Taxonomic classification
+**Interpretation:**
+- The **dominant taxon** (abundance >0.5)
+- Secondary taxa may indicate low-level contamination, database overlap, or off-target amplification.
+- The output validates whether the intended fungal species was successfully amplified and sequenced.
 
 **Example Interpretation**:
-
-If `Candida albicans` appears with an abundance of `0.77`, this indicates dominant presence. Secondary hits (e.g. <0.05) may reflect background or contamination.
+If `Candida albicans` appears with an abundance of `0.77`, this indicates dominant presence. Secondary hits (e.g. <0.05) may reflect aspecific amplification.
 
 EMU uses a prebuilt UNITE-based fungal ITS database, so accuracy depends on database coverage.
 
@@ -664,7 +673,7 @@ BLAST results (`*.blast.txt`) are formatted in tabular form (outfmt 6) and inclu
 
 
 
-### Mapping Specificity (Minimap2 + Samtools)
+### Mapping Specificity (Minimap2 + Samtools + bedtools)
 
 Mapping specificity is calculated as:
 ( Number of reads mapped to ITS region / Total mapped reads ) × 100
@@ -680,3 +689,38 @@ samtools view -b -F 4 sorted.bam | samtools fastq | awk 'END {print NR/4}'
 
 A high percentage (e.g. >80%) suggests accurate and specific amplification of the fungal ITS region.
 Low values may indicate poor primer performance, low-quality reads, or wrong reference genomes.
+
+> The .sorted.bam files can be visually inspected using IGV (Integrative Genomics Viewer). Load both the sorted BAM and its index .bai file alongside the reference genome to verify whether reads cluster within  the expected ITS coordinates.
+
+BEDTools analysis for mapping region summary:
+
+We used bedtools bamtobed to convert BAM to BED, and then bedtools merge to summarize all mapped regions:
+Interpretation:
+- The merged BED file reveals the total extent of coverage.
+- This can be compared to ITS region coordinates to assess overlap and detect non-specific mapping.
+
+## Acknowledgements
+
+This project makes use of several open-source tools and community resources. We gratefully acknowledge the developers and contributors of the following tools and databases:
+
+- [`Filtlong`](https://github.com/rrwick/Filtlong) – for quality filtering of Nanopore reads  
+- [`NanoPlot`](https://github.com/wdecoster/NanoPlot) – for quality control and read length statistics  
+- [`EMU`](https://github.com/treangenlab/emu) – for ITS-based taxonomic classification  
+- [`Flye`](https://github.com/fenderglass/Flye) – for de novo genome assembly from long reads  
+- [`wf-amplicon`](https://github.com/epi2me-labs/wf-amplicon) – for amplicon consensus generation and variant calling  
+- [`seqtk`](https://github.com/lh3/seqtk) – for conversion between FASTQ and FASTA formats  
+- [`ITSx`](https://anaconda.org/bioconda/itsx) – for ITS1 and ITS2 region extraction  
+- [`BLASTn`](https://github.com/JacobLondon/Blastn) – for sequence alignment and species identification  
+- [`minimap2`](https://github.com/lh3/minimap2) – for mapping reads to fungal reference genomes  
+- [`samtools`](https://github.com/samtools/samtools) – for BAM processing and alignment statistics  
+- [`BEDTools`](https://github.com/arq5x/bedtools2) – for converting and merging to get the locations
+- [`gunzip`](https://www.gnu.org/software/gzip/) – for decompressing .gz archive files  
+- [`IGV (Integrative Genomics Viewer)`](https://github.com/igvteam/igv) – for visualizing read alignments and genome features  
+
+**Additional resources:**
+- [UNITE Database](https://unite.ut.ee/) – for curated fungal ITS reference sequences  
+- [NCBI RefSeq](https://www.ncbi.nlm.nih.gov/refseq/) – for fungal genome assemblies and annotations
+
+## License
+
+This project is licensed under the [GNU General Public License v3.0 (GPLv3)](https://www.gnu.org/licenses/gpl-3.0.en.html).
