@@ -328,15 +328,16 @@ It includes three main strategies:
 All commands are executed from the working directory:  
 `/mnt/studentfiles/2025/2025MBI06`
 
-### Flye installation
-Install Flye
+### Flye
+Flye was used to perform de novo assembly of Nanopore amplicon reads for each clinical isolate (barcode01 to barcode10), without using a reference genome.
 
+#### Flye installation
 ```bash
 conda create -n flye_env -c bioconda -c conda-forge flye
 conda activate flye_env
 ```
 
-### Run Flye for All Barcodes with filtered reads (70%)
+#### Run Flye for All Barcodes with filtered reads (70%)
 Assemble filtered reads (70%) from Filtlong
 
 ```bash
@@ -355,7 +356,13 @@ wf-amplicon was used to reconstruct amplicons either:
 - Without a reference (de novo mode)
 - Using an ITS-region reference (variant calling mode)
 
-De Novo Mode Example:
+#### wf-amplicon installation
+```bash
+conda create -n wfamplicon_env -c bioconda -c conda-forge nextflow
+conda activate wfamplicon_env
+```
+
+#### De Novo Mode Example:
 ```bash
 nextflow run epi2me-labs/wf-amplicon \
   --fastq project_data/2425-008_barcode01.fastq \
@@ -378,13 +385,13 @@ nextflow run epi2me-labs/wf-amplicon \
 ### Convert FASTQ to FASTA
 Before running ITSx, the filtered .fastq reads of the clinical isolates must be converted to .fasta, since ITSx only supports FASTA input.
 
-### Install seqtk
+#### Install seqtk
 ```bash
 conda create -n seqtk_env -c bioconda -c conda-forge seqtk
 conda activate seqtk_env
 ```
 
-### Conversion Script
+#### Conversion Script
 ```bash
 #!/bin/bash
 
@@ -396,17 +403,23 @@ for i in $(seq -w 1 10); do
 done
 ```
 
-### 4. ITS Region Extraction with ITSx
+### ITS Region Extraction with ITSx
 
-ITSx was used to extract the Internal Transcribed Spacer (ITS) regions from consensus sequences obtained via:
+ITSx was used to extract the Internal Transcribed Spacer (ITS) regions from consensus FASTA sequences. These FASTA files were obtained from four different workflows:
+- Flye assemblies (assembly.fasta)
+- wf-amplicon (reference-guided) output (reference_sanitized_seqIDs.fasta)
+- wf-amplicon (de novo) output (consensus.fasta)
+- seqtk converted filtered reads (barcode##_filtered.fasta)
 
-- `Flye` (de novo)
-- `wf-amplicon` (reference-based)
-- `wf-amplicon` (de novo)
+Each dataset was placed in a separate input folder, and a corresponding output folder was created for the extracted ITS regions.
 
-Each set of consensus FASTA sequences was processed separately. For each workflow, a new output directory was created.
+#### ITSx installation
+```bash
+conda create -n itsx_env -c bioconda -c conda-forge ITSx
+conda activate istx_env
+```
 
-Example: ITSx on wf-amplicon (reference-based)
+#### Example: ITSx on wf-amplicon (reference-based)
 
 ```bash
 #!/bin/bash
@@ -429,5 +442,50 @@ for folder in "$INPUT_DIR"/barcode*/; do
     --cpu 4
 done
 ```
+> To process the other datasets, only the INPUT_DIR, OUTPUT_DIR and fasta_file variable need to be adjusted accordingly.
+> Repeat this process for the other consensus sources by adjusting the INPUT_DIR:
+> - ITSflye -> ITSflye_output
+> - wfamplicon_denovo -> ITSwfamplicon_denovo
 
-> Output: One directory per sample containing ITSx results (e.g., ITSx output, .ITS1.fasta, .ITS2.fasta, .log.txt, etc.)
+### Run BLASTn on Extracted ITS Regions
+
+After extracting ITS regions using ITSx, we performed BLASTn searches to identify fungal species.
+
+We used the UNITE + INSD fungal ITS database, available at:
+https://doi.plutof.ut.ee/doi/10.15156/BIO/3301227
+
+The BLASTn search was applied to consensus ITS1 and ITS2 sequences extracted from the following sources:
+- ITSflye (from Flye-based assemblies)
+- ITSwfampliconref (from reference-guided wf-amplicon)
+- ITSwfamplicon_de_novo (from wf-amplicon de novo assemblies)
+- ITSconvertfasta (filtered reads converted to FASTA)
+
+Each directory contains FASTA files named sample.ITS1.fasta and sample.ITS2.fasta, which were used as input for the BLASTn searches.
+
+#### blastn installation
+```bash
+conda create -n blast_env -c bioconda -c conda-forge blastn
+conda activate blast_env
+```
+
+#### Running blastn on the sources
+```bash
+#!/bin/bash
+ITS_DIR="/mnt/StudentFiles/2025/2025MBI06/ITSwfamplicon"
+DB="/mnt/StudentFiles/2025/2025MBI06/ITS_database/unite_ITS_db"
+# Loop over each barcode folder and BLAST ITS1 and ITS2 sequences
+for folder in "$ITS_DIR"/barcode*/; do
+    sample=$(basename "$folder")
+
+    ITS1="$folder/${sample}.ITS1.fasta"
+    ITS2="$folder/${sample}.ITS2.fasta"
+
+    # BLAST ITS1 region
+    blastn -query "$ITS1" -db "$DB" -out "$folder/${sample}.ITS1.blast.txt" \
+      -evalue 1e-5 -outfmt 6 -num_threads 4
+
+    # BLAST ITS2 region
+    blastn -query "$ITS2" -db "$DB" -out "$folder/${sample}.ITS2.blast.txt" \
+      -evalue 1e-5 -outfmt 6 -num_threads 4
+done
+```
