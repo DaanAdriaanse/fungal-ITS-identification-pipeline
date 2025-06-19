@@ -146,7 +146,6 @@ It uses:
 - `minimap2` to align reads to fungal reference genomes
 - `samtools` to convert and process the alignment files
 - `samtools view` + `blasted primers` to calculate the percentage % specific mapped
-- `bedtools intersect` to determine which reads overlap with annotated ITS regions
 
 All commands are executed from the following working directory: /mnt/studentfiles/2025/2025MBI06.
 
@@ -249,7 +248,7 @@ To evaluate how specifically reads map to their expected fungal ITS regions, we 
 This was done using samtools view in combination with primer coordinates (from BLAST) stored in .bed files. Read counts were obtained by converting BAM output to FASTQ and dividing the number of lines by 4.
 
 The percentage is calculated using the formula:
-( number of reads in ITS region / total number of mapped reads ) × 100
+( number of reads in ITS region / total number of mapped reads ) × 100.
 
 ```bash
 # Example for Barcode 01 (Candida albicans)
@@ -261,3 +260,28 @@ samtools view -b -F 4 minimap_samples/sorted_bam/barcode01_c_albicans_genomic.so
 samtools view -b -F 4 minimap_samples/sorted_bam/barcode01_c_albicans_genomic.sorted.bam \
 | samtools fastq | awk 'END {print NR/4}'
 ```
+
+--- 
+
+## Sub-Workflow 2: GermGenie
+
+This workflow performs direct taxonomic classification of fungal ITS reads using [GermGenie](https://github.com/czbiohub/GermGenie), which internally uses the EMU classifier.
+
+Before using EMU, download the prebuilt fungal ITS database provided by the UNITE Community:
+
+**Database source:**  
+https://doi.plutof.ut.ee/doi/10.15156/BIO/1280049
+
+### Download and Extract the Database
+
+```bash
+# Extract the prebuilt UNITE database (downloaded as .tgz and .tar)
+tar -xvzf sh_general_release.tgz
+tar -xvzf sh_general_release.tar
+```
+
+### Create a dedicated Conda environment for EMU
+conda create -n emu_env -c bioconda -c conda-forge emu
+
+### Activate the environment
+conda activate emu_env
