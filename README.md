@@ -181,9 +181,25 @@ Then map each sample to its corresponding reference genome. Example for barcode0
 minimap2 -ax map-ont All_fna/c_albicans_genomic.fna project_data/2425-008_barcode01.fastq > Minimap_samples/barcode01_c_albicans.sam
 ```
 
----
-
 ### Convert and Sort Alignment Files with Samtools
 
 Each `.sam` file from the `minimap_samples/` folder was converted to `.bam`, sorted, and indexed.  
 The sorted files were stored in a subfolder called `sorted_bam/`, located inside `minimap_samples/`.
+
+```bash
+# create output folder
+mkdir -p minimap_samples/sorted_bam
+
+# Convert SAM to BAM
+samtools view -bS minimap_samples/barcode01_c_albicans_genomic.sam > minimap_samples/barcode01_c_albicans_genomic.bam
+
+# Sort the BAM file
+samtools sort minimap_samples/barcode01_c_albicans_genomic.bam -o minimap_samples/sorted_bam/barcode01.sorted.bam
+
+# Index the sorted BAM
+samtools index minimap_samples/sorted_bam/barcode01.sorted.bam
+```
+
+Repeat these three commands for each barcode (barcode01 to barcode10), updating the filenames accordingly.
+
+
