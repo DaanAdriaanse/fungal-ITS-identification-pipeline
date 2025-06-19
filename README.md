@@ -64,18 +64,18 @@ This project analyzed sequencing data from 10 clinically relevant fungal isolate
 
 #### Sample Overview
 
-| FASTQ File                  | Barcode | Species                     |
-|----------------------------|---------|-----------------------------|
-| 2425-008_barcode01.fastq   | 01      | *Candida albicans*          |
-| 2425-008_barcode02.fastq   | 02      | *Cryptococcus neoformans*   |
-| 2425-008_barcode03.fastq   | 03      | *Lichtheimia ramosa*        |
-| 2425-008_barcode04.fastq   | 04      | *Trichosporon asahii*       |
-| 2425-008_barcode05.fastq   | 05      | *Candida tropicalis*        |
-| 2425-008_barcode06.fastq   | 06      | *Trichophyton indotineae*   |
-| 2425-008_barcode07.fastq   | 07      | *Aspergillus fumigatus*     |
-| 2425-008_barcode08.fastq   | 08      | *Candida parapsilosis*      |
-| 2425-008_barcode09.fastq   | 09      | *Aspergillus flavus*        |
-| 2425-008_barcode10.fastq   | 10      | *Malassezia pachydermatis*  |
+| FASTQ File                  | Species                    |
+|----------------------------|-----------------------------|
+| 2425-008_barcode01.fastq   | *Candida albicans*          |
+| 2425-008_barcode02.fastq   | *Cryptococcus neoformans*   |
+| 2425-008_barcode03.fastq   | *Lichtheimia ramosa*        |
+| 2425-008_barcode04.fastq   | *Trichosporon asahii*       |
+| 2425-008_barcode05.fastq   | *Candida tropicalis*        |
+| 2425-008_barcode06.fastq   | *Trichophyton indotineae*   |
+| 2425-008_barcode07.fastq   | *Aspergillus fumigatus*     |
+| 2425-008_barcode08.fastq   | *Candida parapsilosis*      |
+| 2425-008_barcode09.fastq   | *Aspergillus flavus*        |
+| 2425-008_barcode10.fastq   | *Malassezia pachydermatis*  |
 
 
 ### Software Tools
