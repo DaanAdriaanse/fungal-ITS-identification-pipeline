@@ -280,8 +280,33 @@ tar -xvzf sh_general_release.tgz
 tar -xvzf sh_general_release.tar
 ```
 
-### Create a dedicated Conda environment for EMU
+### Create a dedicated Conda environment for EMU and activate the environment
+```bash
 conda create -n emu_env -c bioconda -c conda-forge emu
-
-### Activate the environment
 conda activate emu_env
+```
+
+### Configure EMU Environment Variables
+```bash
+# Set EMU database directory and database name
+export EMU_DATABASE_DIR=~/emu_dbs
+export EMU_PREBUILT_DB='unite-fungi'
+
+# Create and move into the database directory
+mkdir -p ${EMU_DATABASE_DIR}
+cd ${EMU_DATABASE_DIR}
+```
+
+
+
+### Creating new folder and run EMU on a Sample
+```bash
+# Create new foler
+mkdir -p emu_results
+# Example: classify reads from barcode01
+emu abundance /filtlong_samples/barcode01_filtered.fastq \
+  --db $EMU_DATABASE_DIR \
+  --output-dir ./emu_results/barcode01
+```
+Repeat this step for each filtered sample.
+
