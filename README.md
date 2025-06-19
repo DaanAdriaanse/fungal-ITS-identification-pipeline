@@ -137,6 +137,7 @@ for file in "$map"/barcode*_filtered.fastq; do
     NanoPlot --fastq "$file" --outdir "$map/$barcode" --plots hex dot --loglength --N50
 done
 ```
+--- 
 
 ## Sub-Workflow 1: Mapping & Specificity
 
@@ -342,4 +343,50 @@ for i in $(seq -w 1 10); do
       --out-dir "./ITSflye/barcode${i}" \
       --threads 8
 ```
+
+### wf-amplicon (de novo and reference-based)
+wf-amplicon was used to reconstruct amplicons either:
+- Without a reference (de novo mode)
+- Using an ITS-region reference (variant calling mode)
+
+De Novo Mode Example:
+```bash
+nextflow run epi2me-labs/wf-amplicon \
+  --fastq project_data/2425-008_barcode01.fastq \
+  --sample barcode01 \
+  --out_dir wfamplicon_denovo/barcode01 \
+  -profile standard
+```
+Variant Calling Mode (Requires ITS Reference) example:
+Reference FASTA files were extracted from the expected ITS regions of each fungal genome using BLAST coordinates. These reference files were stored in the chromosome/ directory.
+Variant calling example:
+```bash
+nextflow run epi2me-labs/wf-amplicon \
+  --fastq project_data/2425-008_barcode01.fastq \
+  --sample barcode01 \
+  --reference chromosome/albicans.fasta \
+  --out_dir wfampliconref_new/barcode01 \
+  -profile standard
+```
+
+### Convert FASTQ to FASTA
+Before running ITSx, the filtered .fastq reads of the clinical isolates must be converted to .fasta, since ITSx only supports FASTA input.
+
+### Install seqtk
+```bash
+conda create -n seqtk_env -c bioconda -c conda-forge seqtk
+conda activate seqtk_env
+```
+
+### Conversion Script
+```bash
+mkdir -p ITSconvertfasta
+
+for i in $(seq -w 1 10); do
+  seqtk seq -A "filtlong_samples_70/barcode${i}_filtered.fastq" > \
+  "ITSconvertfasta/barcode${i}_filtered.fasta"
+done
+```
+
+
 
