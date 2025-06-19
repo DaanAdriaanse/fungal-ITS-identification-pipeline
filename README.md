@@ -48,7 +48,6 @@ The following software tools, platforms, and databases were used to build and ru
 - `BLAST+` – for fungal species identification against UNITE and primer blast against reference genome. 
 - `Minimap2` – for aligning reads to fungal reference genomes  
 - `Samtools` – for BAM processing and calculation of mapped read counts via `samtools view`  
-- `Bedtools intersect` – for determining overlap of mapped reads with annotated ITS regions (PCR specificity)
 
 ### Reference Databases
 - **UNITE fungal ITS database** – used for BLAST-based identification  
@@ -172,7 +171,7 @@ Examples:
 Install all required tools in a dedicated Conda environment:
 
 ```bash
-conda create -n mapping_env minimap2 samtools bedtools blastn -c bioconda -c conda-forge
+conda create -n mapping_env minimap2 samtools blastn -c bioconda -c conda-forge
 conda activate mapping_env
 ```
 
@@ -493,7 +492,6 @@ for folder in "$ITS_DIR"/barcode*/; do
 done
 ```
 
----
 
 ## Output Structure
 Each sub-workflow produces its own organized set of results, stored in dedicated directories per sample (barcode01 to barcode10). Below is an overview of the key output folders:
@@ -522,7 +520,6 @@ Each sub-workflow produces its own organized set of results, stored in dedicated
 - `a_aprimerblastnew/`  
   Contains `.txt` files with ITS amplicon coordinates derived from BLAST of primers. These regions are used to extract region-specific mappings with `samtools view`.
 
----
 
 ### Sub-Workflow 2: GermGenie
 
