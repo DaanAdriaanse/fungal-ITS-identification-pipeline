@@ -97,12 +97,12 @@ This project analyzed sequencing data from 10 clinically relevant fungal isolate
 ### Reference Databases
 - **UNITE fungal ITS database** – used for BLAST-based identification
   Downloaded from: UNITE
-  File name: UNITE_public_19.02.2025.fasta.gz (131 MB)
+  File name: UNITE_public_19.02.2025.fasta.gz
   Download link: https://doi.plutof.ut.ee/doi/10.15156/BIO/3301227
   
 - **Custom EMU ITS fungi database** – used for GermGenie classification
   Downloaded from: EMU
-  File name: 	sh_general_release_10.05.2021.tgz (131 MB)
+  File name: 	sh_general_release_10.05.2021.tgz 
   Download link: https://doi.plutof.ut.ee/doi/10.15156/BIO/1280049
   
 - **Fungal reference genomes** – for mapping
