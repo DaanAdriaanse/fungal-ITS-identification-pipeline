@@ -73,7 +73,6 @@ Create a dedicated conda environment for QC tools:
 ```bash
 conda create -n QC_env nanoplot filtlong -c bioconda -c conda-forge
 conda activate QC_env
-done
 ```
 
 ### Visualize Raw Reads with NanoPlot
@@ -110,5 +109,7 @@ For example:
 ```bash
 filtlong --min_length 1000 --keep_percent 70 project_data/2425-008_barcode01.fastq > filtlong_samples_1000_70/barcode01_filtered.fastq
 ```
-
+> **Note:**  
+> We tested filtering at different thresholds (`--keep_percent 70`, `60`, and `50`).  
+> Based on read quality and yield, we continued all downstream analyses using the 70% filtered datasets.
 
