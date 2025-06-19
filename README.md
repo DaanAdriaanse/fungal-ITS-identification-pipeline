@@ -397,9 +397,9 @@ Repeat this step for each filtered sample.
 This sub-workflow focuses on generating consensus sequences from Nanopore amplicons, using either *de novo* assembly or reference-guided variant calling. The goal is to reconstruct accurate ITS regions for downstream tools such as ITSx and BLAST, which require FASTA input.
 
 It includes three main strategies:
-- `Flye` assembly of filtered reads (de novo)
-- `wf-amplicon` using both *de novo* and *variant calling* modes
-- Conversion of filtered `.fastq` files to `.fasta` for ITSx
+- `Flye` assembly of filtered reads (de novo) for ITSx -> BLASTn
+- `wf-amplicon` using both *de novo* and *variant calling* modes for ITSx -> BLASTn
+- Conversion of filtered `.fastq` files to `.fasta` for ITSx -> BLASTn
 
 All commands are executed from the working directory:  
 `/mnt/studentfiles/2025/2025MBI06`
