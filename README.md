@@ -699,6 +699,8 @@ Interpretation:
 - The merged BED file reveals the total extent of coverage.
 - This can be compared to ITS region coordinates to assess overlap and detect non-specific mapping.
 
+---
+
 ## Acknowledgements
 
 This project makes use of several open-source tools and community resources. We gratefully acknowledge the developers and contributors of the following tools and databases:
@@ -720,6 +722,8 @@ This project makes use of several open-source tools and community resources. We 
 **Additional resources:**
 - [UNITE Database](https://unite.ut.ee/) – for curated fungal ITS reference sequences  
 - [NCBI RefSeq](https://www.ncbi.nlm.nih.gov/refseq/) – for fungal genome assemblies and annotations
+
+---
 
 ## License
 
