@@ -145,6 +145,7 @@ This workflow evaluates how specifically each sample maps to the correct fungal 
 It uses:
 - `minimap2` to align reads to fungal reference genomes
 - `samtools` to convert and process the alignment files
+- `samtools view` + `blasted primers` to calculate the percentage % specific mapped
 - `bedtools intersect` to determine which reads overlap with annotated ITS regions
 
 All commands are executed from the following working directory: /mnt/studentfiles/2025/2025MBI06.
@@ -165,7 +166,7 @@ Examples:
 Install all required tools in a dedicated Conda environment:
 
 ```bash
-conda create -n mapping_env minimap2 samtools bedtools -c bioconda -c conda-forge
+conda create -n mapping_env minimap2 samtools bedtools blastn -c bioconda -c conda-forge
 conda activate mapping_env
 ```
 
@@ -201,5 +202,21 @@ samtools index minimap_samples/sorted_bam/barcode01.sorted.bam
 ```
 
 Repeat these three commands for each barcode (barcode01 to barcode10), updating the filenames accordingly.
+
+
+### Primer-to-Genome BLAST Search
+
+To verify where primers bind in the fungal genomes, each primer was aligned against each `.fna` reference genome using `blastn`.
+This step helps determine expected amplicon positions for alignment validation and extraction.
+
+Prepare Primer FASTA File
+
+Each primer (forward or reverse) must be saved as a `.fasta` file with a meaningful name. Example:
+```fasta
+>Fw1
+TAGAGGAAGTAAAAGTCGTAA
+>Rv5
+...
+```
 
 
