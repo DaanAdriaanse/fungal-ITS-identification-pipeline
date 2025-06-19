@@ -251,13 +251,13 @@ The sorted files were stored in a subfolder called `sorted_bam/`, located inside
 mkdir -p minimap_samples/sorted_bam
 
 # Convert SAM to BAM
-samtools view -bS minimap_samples/barcode01_c_albicans_genomic.sam > minimap_samples/barcode01_c_albicans_genomic.bam
+samtools view -bS ./minimap_samples/barcode01_c_albicans_genomic.sam > ./minimap_samples/barcode01_c_albicans_genomic.bam
 
 # Sort the BAM file
-samtools sort minimap_samples/barcode01_c_albicans_genomic.bam -o minimap_samples/sorted_bam/barcode01.sorted.bam
+samtools sort ./minimap_samples/barcode01_c_albicans_genomic.bam -o ./minimap_samples/sorted_bam/barcode01.sorted.bam
 
 # Index the sorted BAM
-samtools index minimap_samples/sorted_bam/barcode01.sorted.bam
+samtools index ./minimap_samples/sorted_bam/barcode01.sorted.bam
 ```
 
 Repeat these three commands for each barcode (barcode01 to barcode10), updating the filenames accordingly.
@@ -313,11 +313,11 @@ The percentage is calculated using the formula:
 ```bash
 # Example for Barcode 01 (Candida albicans)
 # Get the number of reads mapped to the expected ITS region
-samtools view -b -F 4 minimap_samples/sorted_bam/barcode01_c_albicans_genomic.sorted.bam NC_032096.1:1892965-1895597 \
+samtools view -b -F 4 ./minimap_samples/sorted_bam/barcode01_c_albicans_genomic.sorted.bam NC_032096.1:1892965-1895597 
 | samtools fastq | awk 'END {print NR/4}'
 
 # Get the total number of mapped reads
-samtools view -b -F 4 minimap_samples/sorted_bam/barcode01_c_albicans_genomic.sorted.bam \
+samtools view -b -F 4 ./minimap_samples/sorted_bam/barcode01_c_albicans_genomic.sorted.bam 
 | samtools fastq | awk 'END {print NR/4}'
 ```
 
@@ -336,8 +336,8 @@ This provides a compact overview of where reads are mapping in the reference gen
 # Example: Candida albicans
 mkdir -n bedtools_bamtobed
 
-bedtools bamtobed -i minimap_samples/sorted_bam/barcode01_c_albicans_genomic.sorted.bam \
-> bedtools_bamtobed/albicans_reads.bed
+bedtools bamtobed -i ./minimap_samples/sorted_bam/barcode01_c_albicans_genomic.sorted.bam 
+> ./bedtools_bamtobed/albicans_reads.bed
 ```
 > Repeat this step for each barcode.
 
@@ -346,8 +346,8 @@ bedtools bamtobed -i minimap_samples/sorted_bam/barcode01_c_albicans_genomic.sor
 # Example: Candida albicans
 mkdir -n bedtools_merge
 
-bedtools merge -i bedtools_bamtobed/albicans_reads.bed \
-> bedtools_merge/albicans_merged.bed
+bedtools merge -i ./bedtools_bamtobed/albicans_reads.bed 
+> ./bedtools_merge/albicans_merged.bed
 ```
 > Repeat this step for each barcode.
 
@@ -358,6 +358,8 @@ bedtools merge -i bedtools_bamtobed/albicans_reads.bed \
 This workflow performs direct taxonomic classification of fungal ITS reads using [GermGenie](https://github.com/czbiohub/GermGenie), which internally uses the EMU classifier.
 
 Before using EMU, download the prebuilt fungal ITS database provided by the UNITE Community:
+
+All commands are executed from the following working directory: /mnt/studentfiles/2025/2025MBI06.
 
 **Database source:**  
 https://doi.plutof.ut.ee/doi/10.15156/BIO/1280049
@@ -394,8 +396,8 @@ cd ${EMU_DATABASE_DIR}
 # Create new foler
 mkdir -p emu_results
 # Example: classify reads from barcode01
-emu abundance /filtlong_samples_70/barcode01_filtered.fastq \
-  --db $EMU_DATABASE_DIR \
+emu abundance ./filtlong_samples_70/barcode01_filtered.fastq 
+  --db $EMU_DATABASE_DIR 
   --output-dir ./emu_results/barcode01
 ```
 Repeat this step for each filtered sample.
@@ -411,8 +413,8 @@ It includes three main strategies:
 - `wf-amplicon` using both *de novo* and *variant calling* modes for ITSx -> BLASTn
 - Conversion of filtered `.fastq` files to `.fasta` for ITSx -> BLASTn
 
-All commands are executed from the working directory:  
-`/mnt/studentfiles/2025/2025MBI06`
+All commands are executed from the following working directory: /mnt/studentfiles/2025/2025MBI06.
+
 
 ### Flye
 Flye was used to perform de novo assembly of Nanopore amplicon reads for each clinical isolate (barcode01 to barcode10), without using a reference genome.
@@ -430,9 +432,9 @@ Assemble filtered reads (70%) from Filtlong
 #!/bin/bash
 
 for i in $(seq -w 1 10); do
-    flye \
-      --nano-raw "filtlong_samples_70/barcode${i}_filtered.fastq" \
-      --out-dir "./ITSflye/barcode${i}" \
+    flye 
+      --nano-raw "./filtlong_samples_70/barcode${i}_filtered.fastq" 
+      --out-dir "./ITSflye/barcode${i}" 
       --threads 8
 done
 ```
@@ -450,20 +452,20 @@ conda activate wfamplicon_env
 
 #### De Novo Mode example:
 ```bash
-nextflow run epi2me-labs/wf-amplicon \
-  --fastq project_data/2425-008_barcode01.fastq \
-  --sample barcode01 \
-  --out_dir wfamplicon_denovo/barcode01 \
+nextflow run epi2me-labs/wf-amplicon 
+  --fastq ./project_data/2425-008_barcode01.fastq 
+  --sample barcode01 
+  --out_dir ./wfamplicon_denovo/barcode01 
   -profile standard
 ```
 
 #### Variant calling example:
 ```bash
-nextflow run epi2me-labs/wf-amplicon \
-  --fastq project_data/2425-008_barcode01.fastq \
-  --sample barcode01 \
-  --reference chromosome/albicans.fasta \
-  --out_dir wfampliconref_new/barcode01 \
+nextflow run epi2me-labs/wf-amplicon 
+  --fastq ./project_data/2425-008_barcode01.fastq 
+  --sample barcode01 
+  --reference ./chromosome/albicans.fasta 
+  --out_dir ./wfampliconref_new/barcode01 
   -profile standard
 ```
 >These workflows were executed separately for each of the ten barcoded samples (barcode01 to barcode10), updating the --fastq, --sample, --reference, --out_dir parameters accordingly. Output directories were created per sample to maintain a structured and reproducible workflow.
@@ -484,8 +486,8 @@ conda activate seqtk_env
 mkdir -p ITSconvertfasta
 
 for i in $(seq -w 1 10); do
-  seqtk seq -A "filtlong_samples_70/barcode${i}_filtered.fastq" > \
-  "ITSconvertfasta/barcode${i}_filtered.fasta"
+  seqtk seq -A "./filtlong_samples_70/barcode${i}_filtered.fastq" >
+  "./ITSconvertfasta/barcode${i}_filtered.fasta"
 done
 ```
 
@@ -567,11 +569,11 @@ for folder in "$ITS_DIR"/barcode*/; do
     ITS2="$folder/${sample}.ITS2.fasta"
 
     # BLAST ITS1 region
-    blastn -query "$ITS1" -db "$DB" -out "$folder/${sample}.ITS1.blast.txt" \
+    blastn -query "$ITS1" -db "$DB" -out "$folder/${sample}.ITS1.blast.txt" 
       -evalue 1e-5 -outfmt 6 -num_threads 4
 
     # BLAST ITS2 region
-    blastn -query "$ITS2" -db "$DB" -out "$folder/${sample}.ITS2.blast.txt" \
+    blastn -query "$ITS2" -db "$DB" -out "$folder/${sample}.ITS2.blast.txt" 
       -evalue 1e-5 -outfmt 6 -num_threads 4
 done
 ```
