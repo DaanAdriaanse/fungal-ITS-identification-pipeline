@@ -81,6 +81,8 @@ conda activate QC_env
 ### Visualize Raw Reads with NanoPlot
 
 ```bash
+#!/bin/bash
+
 # Create an output directory for NanoPlot results
 mkdir -p nanoplot_samples
 
@@ -122,6 +124,8 @@ After filtering, each `.fastq` file is visualized using `NanoPlot`.
 Results are saved in a separate folder for each barcode inside the same output directory.
 
 ```bash
+#!/bin/bash
+
 # Set the folder where the filtered FASTQ files are stored
 map="filtlong_samples_70"
 
@@ -324,7 +328,6 @@ It includes three main strategies:
 All commands are executed from the working directory:  
 `/mnt/studentfiles/2025/2025MBI06`
 
-## Flye
 ### Flye installation
 Install Flye
 
@@ -337,15 +340,17 @@ conda activate flye_env
 Assemble filtered reads (70%) from Filtlong
 
 ```bash
+#!/bin/bash
+
 for i in $(seq -w 1 10); do
     flye \
       --nano-raw "filtlong_samples_70/barcode${i}_filtered.fastq" \
       --out-dir "./ITSflye/barcode${i}" \
       --threads 8
+done
 ```
 
-## wfamplicon
-### de novo and reference-based
+### wf-amplicon (de novo and reference-based)
 wf-amplicon was used to reconstruct amplicons either:
 - Without a reference (de novo mode)
 - Using an ITS-region reference (variant calling mode)
@@ -381,6 +386,8 @@ conda activate seqtk_env
 
 ### Conversion Script
 ```bash
+#!/bin/bash
+
 mkdir -p ITSconvertfasta
 
 for i in $(seq -w 1 10); do
@@ -399,3 +406,28 @@ ITSx was used to extract the Internal Transcribed Spacer (ITS) regions from cons
 
 Each set of consensus FASTA sequences was processed separately. For each workflow, a new output directory was created.
 
+Example: ITSx on wf-amplicon (reference-based)
+
+```bash
+#!/bin/bash
+
+INPUT_DIR="/mnt/StudentFiles/2025/2025MBI06/wfampliconref_new"
+OUTPUT_DIR="/mnt/StudentFiles/2025/2025MBI06/ITSwfamplicon"
+
+mkdir -p "$OUTPUT_DIR"
+
+for folder in "$INPUT_DIR"/barcode*/; do
+  sample=$(basename "$folder")
+  fasta_file="$folder/reference_sanitized_seqIDs.fasta"
+
+  mkdir -p "$OUTPUT_DIR/$sample"
+
+  ITSx \
+    -i "$fasta_file" \
+    -o "$OUTPUT_DIR/$sample/$sample" \
+    -t F \
+    --cpu 4
+done
+```
+
+> Output: One directory per sample containing ITSx results (e.g., ITSx output, .ITS1.fasta, .ITS2.fasta, .log.txt, etc.)
