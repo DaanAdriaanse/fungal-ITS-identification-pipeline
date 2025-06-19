@@ -429,7 +429,7 @@ done
 ### Wf-amplicon (de novo and reference-based)
 wf-amplicon was used to reconstruct amplicons either:
 - Without a reference (de novo mode)
-- Using an ITS-region reference (variant calling mode)
+- Using an ITS-region reference (variant calling mode), Reference FASTA files were extracted from the expected ITS regions of each fungal genome using BLAST coordinates. These reference files were stored in the chromosome/ directory.
 
 #### wf-amplicon installation
 ```bash
@@ -437,7 +437,7 @@ conda create -n wfamplicon_env -c bioconda -c conda-forge nextflow
 conda activate wfamplicon_env
 ```
 
-#### De Novo Mode Example:
+#### De Novo Mode example:
 ```bash
 nextflow run epi2me-labs/wf-amplicon \
   --fastq project_data/2425-008_barcode01.fastq \
@@ -445,9 +445,8 @@ nextflow run epi2me-labs/wf-amplicon \
   --out_dir wfamplicon_denovo/barcode01 \
   -profile standard
 ```
-Variant Calling Mode (Requires ITS Reference) example:
-Reference FASTA files were extracted from the expected ITS regions of each fungal genome using BLAST coordinates. These reference files were stored in the chromosome/ directory.
-Variant calling example:
+
+#### Variant calling example:
 ```bash
 nextflow run epi2me-labs/wf-amplicon \
   --fastq project_data/2425-008_barcode01.fastq \
@@ -456,6 +455,7 @@ nextflow run epi2me-labs/wf-amplicon \
   --out_dir wfampliconref_new/barcode01 \
   -profile standard
 ```
+>These workflows were executed separately for each of the ten barcoded samples (barcode01 to barcode10), updating the --fastq, --sample, --reference, --out_dir parameters accordingly. Output directories were created per sample to maintain a structured and reproducible workflow.
 
 ### Convert FASTQ to FASTA
 Before running ITSx, the filtered .fastq reads of the clinical isolates must be converted to .fasta, since ITSx only supports FASTA input.
