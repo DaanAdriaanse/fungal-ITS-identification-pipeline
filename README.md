@@ -32,6 +32,18 @@ This pipeline processes Nanopore long-read data from PCR-amplified ITS regions u
 Each step supports downstream analysis for high-quality Fungal isolates.
 
 ---
+## Implementation
+
+This project was implemented as a modular command-line pipeline for fungal ITS identification based on Nanopore amplicon data. The pipeline is divided into clearly structured components that can be executed separately or in sequence. Each component includes scripts, required tools, and input/output folders per sample.
+
+The full workflow consists of the following main parts:
+
+- **Preprocessing**: Raw FASTQ reads are filtered and assessed for quality.  
+- **Sub-Workflow 1: Mapping & Specificity**: Filtered reads are aligned to fungal reference genomes using Minimap2. Samtools and Bedtools are used to extract mapped regions and validate primer specificity.  
+- **Sub-Workflow 2: GermGenie**: A direct taxonomic classification of reads is performed using GermGenie and the EMU classifier.  
+- **Sub-Workflow 3: Consensus-Based/Convertfasta-based Identification**: Consensus sequences are generated using Flye and wf-amplicon in both de novo and variant calling modes. Additionally, FASTQ reads from the clinical isolates are converted to FASTA for direct ITSx processing and BLAST-based species identification.
+
+---
 
 ## Materials
 The following software tools, platforms, and databases were used to build and run the fungal ITS identification pipeline:
