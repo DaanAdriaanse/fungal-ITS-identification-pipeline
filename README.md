@@ -680,7 +680,6 @@ For each sample, the tool outputs:
 
 Presence of both ITS1 and ITS2 suggests complete and usable ITS region extraction for BLAST identification.
 
----
 
 ### BLAST Results (ITS1 & ITS2)
 
