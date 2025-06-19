@@ -219,4 +219,45 @@ TAGAGGAAGTAAAAGTCGTAA
 ...
 ```
 
+### Run PRIMER BLAST Against All Genomes
+```bash
+#!/bin/bash
 
+# Path to the primer and genome directory
+PRIMER="/mnt/StudentFiles/2025/2025MBI06/all_fna/primerF1.fasta"
+DB_DIR="/mnt/StudentFiles/2025/2025MBI06/all_fna"
+OUT_DIR="./primerblastnew"
+
+mkdir -p "$OUT_DIR"
+
+# Loop through each genome file and run BLAST
+for DB in "$DB_DIR"/*.fna; do
+    BASENAME=$(basename "$DB" .fna)
+
+    # Create BLAST database
+    makeblastdb -in "$DB" -dbtype nucl
+
+    # Run blastn with word_size 22 for short primer hits
+    blastn -query "$PRIMER" -db "$DB" -word_size 22 -out "$OUT_DIR/${BASENAME}_blast.txt" -outfmt 6
+done
+```
+
+### Calculate Mapping Specificity Percentages
+
+To evaluate how specifically reads map to their expected fungal ITS regions, we calculated the percentage of mapped reads that fall within the primer-defined amplicon coordinates.
+
+This was done using samtools view in combination with primer coordinates (from BLAST) stored in .bed files. Read counts were obtained by converting BAM output to FASTQ and dividing the number of lines by 4.
+
+The percentage is calculated using the formula:
+( number of reads in ITS region / total number of mapped reads ) × 100
+
+```bash
+# Example for Barcode 01 (Candida albicans)
+# Get the number of reads mapped to the expected ITS region
+samtools view -b -F 4 minimap_samples/sorted_bam/barcode01_c_albicans_genomic.sorted.bam NC_032096.1:1892965-1895597 \
+| samtools fastq | awk 'END {print NR/4}'
+
+# Get the total number of mapped reads
+samtools view -b -F 4 minimap_samples/sorted_bam/barcode01_c_albicans_genomic.sorted.bam \
+| samtools fastq | awk 'END {print NR/4}'
+```
