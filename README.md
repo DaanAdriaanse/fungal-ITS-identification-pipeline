@@ -28,7 +28,7 @@ This pipeline processes Nanopore long-read data from PCR-amplified ITS regions u
 - Direct ITS classification via GermGenie
 - Consensus-based taxonomic identification (ITSx + BLAST)
 - Convert fasta for taxonomic identification (ITSx + BLAST)
-- Mapping and specificity assessment using Minimap2 and Samtools
+- Mapping and specificity assessment using Minimap2, Samtools + bedtools
 
 Each step supports downstream analysis for high-quality Fungal isolates.
 
@@ -51,22 +51,21 @@ This project analyzed sequencing data from 10 clinically relevant fungal isolate
 - **Read characteristics**:
   - Mean read length: ~2,625 bp
 
-#### The 10 fungal species included:
+#### Sample Overview
 
-| Barcode | Species                    |
-|---------|----------------------------|
-| 01      | *Candida albicans*         |
-| 02      | *Cryptococcus neoformans*  |
-| 03      | *Lichtheimia ramosa*       |
-| 04      | *Trichosporon asahii*      |
-| 05      | *Candida tropicalis*       |
-| 06      | *Trichophyton indotineae*  |
-| 07      | *Aspergillus fumigatus*    |
-| 08      | *Candida parapsilosis*     |
-| 09      | *Aspergillus flavus*       |
-| 10      | *Malassezia pachydermatis* |
+| FASTQ File                  | Barcode | Species                     |
+|----------------------------|---------|-----------------------------|
+| 2425-008_barcode01.fastq   | 01      | *Candida albicans*          |
+| 2425-008_barcode02.fastq   | 02      | *Cryptococcus neoformans*   |
+| 2425-008_barcode03.fastq   | 03      | *Lichtheimia ramosa*        |
+| 2425-008_barcode04.fastq   | 04      | *Trichosporon asahii*       |
+| 2425-008_barcode05.fastq   | 05      | *Candida tropicalis*        |
+| 2425-008_barcode06.fastq   | 06      | *Trichophyton indotineae*   |
+| 2425-008_barcode07.fastq   | 07      | *Aspergillus fumigatus*     |
+| 2425-008_barcode08.fastq   | 08      | *Candida parapsilosis*      |
+| 2425-008_barcode09.fastq   | 09      | *Aspergillus flavus*        |
+| 2425-008_barcode10.fastq   | 10      | *Malassezia pachydermatis*  |
 
-Each isolate was sequenced separately using a unique barcode. FASTQ data was quality filtered and then subjected to different analysis branches including direct taxonomic classification (via EMU) and consensus-based/convertfasta-based workflows (Flye, wf-amplicon, convertfasta).
 
 ### Software Tools
 - `Filtlong` – for quality filtering of Nanopore reads  
