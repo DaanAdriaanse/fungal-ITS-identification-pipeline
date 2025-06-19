@@ -64,16 +64,19 @@ The following software tools, platforms, and databases were used to build and ru
 
 ## Preprocessing: Read Filtering & Quality Control
 
-Before running any identification workflow, raw Nanopore reads are filtered and quality-checked using `NanoPlot` and `Filtlong`.
+Before running any identification workflow, raw Nanopore reads are filtered and quality-checked using `NanoPlot` and `Filtlong`.  
+All project data is stored in the `project_data/` directory, containing raw FASTQ files from 10 PCR-amplified clinical fungal isolates.
 
-### Installation/workflow
+### Installation
 
 Create a dedicated conda environment for QC tools:
 ```bash
 conda create -n QC_env nanoplot filtlong -c bioconda -c conda-forge
 conda activate QC_env
+done
+```
 
-# Visualize Raw Reads with NanoPlot
+### Visualize Raw Reads with NanoPlot
 
 ```bash
 # Create an output directory for NanoPlot results
@@ -90,4 +93,22 @@ for file in project_data/*.fastq; do
     # Run NanoPlot and output results into the subfolder
     NanoPlot --fastq "$file" --outdir "nanoplot_samples/$name" --loglength --N50
 done
+```
+
+### Filter Reads with Filtlong
+
+To remove low-quality and short Nanopore reads, we used `Filtlong` to retain only high-quality sequences.  
+Each `.fastq` file (one per clinical isolate) was filtered with a minimum read length of 1000 bp, keeping only the top 70% of reads.
+
+Filtered files were saved to the directory: `filtlong_samples_1000_70/`.
+
+```bash
+filtlong --min_length 1000 --keep_percent 70 project_data/2425-008_barcodeXX.fastq > filtlong_samples_1000_70/barcodeXX_filtered.fastq
+```
+Replace XX with the barcode number (01 to 10).
+For example:
+```bash
+filtlong --min_length 1000 --keep_percent 70 project_data/2425-008_barcode01.fastq > filtlong_samples_1000_70/barcode01_filtered.fastq
+```
+
 
