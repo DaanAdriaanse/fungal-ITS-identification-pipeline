@@ -41,7 +41,7 @@ The full workflow consists of the following main parts:
 - **Preprocessing**: Raw FASTQ reads are filtered and assessed for quality.  
 - **Sub-Workflow 1: Mapping & Specificity**: Filtered reads are aligned to fungal reference genomes using Minimap2. Samtools and Bedtools are used to extract mapped regions and validate primer specificity.  
 - **Sub-Workflow 2: GermGenie**: A direct taxonomic classification of reads is performed using GermGenie and the EMU classifier.  
-- **Sub-Workflow 3: Consensus-Based/Convertfasta-based Identification**: Consensus sequences are generated using Flye and wf-amplicon in both de novo and variant calling modes. Additionally, FASTQ reads from the clinical isolates are converted to FASTA for direct ITSx processing and BLAST-based species identification.
+- **Sub-Workflow 3: Consensus-Based/Convertfasta-based Identification**: Consensus sequences are generated using Flye and wf-amplicon in both de novo and variant calling modes. Additionally, FASTQ reads from the clinical isolates are converted to FASTA for direct ITSx processing. These four tools are used to perform species identification based on BLAST searches.
 
 ---
 
