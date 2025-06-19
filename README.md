@@ -746,23 +746,23 @@ Interpretation:
 
 This project makes use of several open-source tools and community resources. We gratefully acknowledge the developers and contributors of the following tools and databases:
 
-- [`Filtlong`](https://github.com/rrwick/Filtlong) – for quality filtering of Nanopore reads  
-- [`NanoPlot`](https://github.com/wdecoster/NanoPlot) – for quality control and read length statistics  
-- [`EMU`](https://github.com/treangenlab/emu) – for ITS-based taxonomic classification  
-- [`Flye`](https://github.com/fenderglass/Flye) – for de novo genome assembly from long reads  
-- [`wf-amplicon`](https://github.com/epi2me-labs/wf-amplicon) – for amplicon consensus generation and variant calling  
-- [`seqtk`](https://github.com/lh3/seqtk) – for conversion between FASTQ and FASTA formats  
-- [`ITSx`](https://anaconda.org/bioconda/itsx) – for ITS1 and ITS2 region extraction  
-- [`BLASTn`](https://github.com/JacobLondon/Blastn) – for sequence alignment and species identification  
-- [`minimap2`](https://github.com/lh3/minimap2) – for mapping reads to fungal reference genomes  
-- [`samtools`](https://github.com/samtools/samtools) – for BAM processing and alignment statistics  
-- [`BEDTools`](https://github.com/arq5x/bedtools2) – for converting and merging to get the locations
-- [`gunzip`](https://www.gnu.org/software/gzip/) – for decompressing .gz archive files  
-- [`IGV (Integrative Genomics Viewer)`](https://github.com/igvteam/igv) – for visualizing read alignments and genome features  
+- [`Filtlong`](https://github.com/rrwick/Filtlong) 
+- [`NanoPlot`](https://github.com/wdecoster/NanoPlot) 
+- [`EMU`](https://github.com/treangenlab/emu)   
+- [`Flye`](https://github.com/fenderglass/Flye) 
+- [`wf-amplicon`](https://github.com/epi2me-labs/wf-amplicon) 
+- [`seqtk`](https://github.com/lh3/seqtk)  
+- [`ITSx`](https://anaconda.org/bioconda/itsx)   
+- [`BLASTn`](https://github.com/JacobLondon/Blastn)  
+- [`minimap2`](https://github.com/lh3/minimap2)  
+- [`samtools`](https://github.com/samtools/samtools) 
+- [`BEDTools`](https://github.com/arq5x/bedtools2) 
+- [`gunzip`](https://www.gnu.org/software/gzip/) 
+- [`IGV (Integrative Genomics Viewer)`](https://github.com/igvteam/igv)
 
 **Additional resources:**
-- [UNITE Database](https://unite.ut.ee/) – for curated fungal ITS reference sequences  
-- [NCBI RefSeq](https://www.ncbi.nlm.nih.gov/refseq/) – for fungal genome assemblies and annotations
+- [UNITE Database](https://unite.ut.ee/) 
+- [NCBI RefSeq](https://www.ncbi.nlm.nih.gov/refseq/) 
 
 ---
 
