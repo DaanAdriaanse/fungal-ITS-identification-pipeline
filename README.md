@@ -54,9 +54,18 @@ The following software tools, platforms, and databases were used to build and ru
   - identify and summarize genomic regions where reads aligned
 
 ### Reference Databases
-- **UNITE fungal ITS database** – used for BLAST-based identification  
-- **Custom EMU ITS fungi database** – used for GermGenie classification  
-- **Fungal reference genomes + GFF annotations** – for mapping and intersect analyses
+- **UNITE fungal ITS database** – used for BLAST-based identification
+  Downloaded from: UNITE
+  File name: UNITE_public_19.02.2025.fasta.gz (131 MB)
+  Download link: https://doi.plutof.ut.ee/doi/10.15156/BIO/3301227
+  
+- **Custom EMU ITS fungi database** – used for GermGenie classification
+  Downloaded from: EMU
+  File name: 	sh_general_release_10.05.2021.tgz (131 MB)
+  Download link: https://doi.plutof.ut.ee/doi/10.15156/BIO/1280049
+  
+- **Fungal reference genomes** – for mapping
+  NCBI reference sequences
 
 ### Platforms and Workflow Managers
 - **Oxford Nanopore MinION** – sequencing platform used to generate PCR amplicon reads  
@@ -584,3 +593,90 @@ Each sub-workflow produces its own organized set of results, stored in dedicated
 
 - `*.ITS1.blast.txt`, `*.ITS2.blast.txt`  
   BLASTn results from querying extracted ITS regions (from ITSx) against the UNITE+INSD fungal ITS database.
+
+
+## Interpretation of Results
+
+The output files of each sub-workflow provide distinct types of biological and technical insight into the fungal ITS sequencing analysis. Below is a detailed explanation of how to interpret the most important result types.
+
+---
+
+### Quality Control (NanoPlot)
+
+Each sample includes a `NanoStats.txt` file with summary statistics. Example fields:
+
+- **Mean read length**: Average size of reads (e.g. `3,942.8` bp).
+- **Mean read quality**: Average Phred quality score (e.g. `19.3`). Scores >10 indicate high basecall confidence.
+- **N50**: Length at which 50% of total bases are in reads of this size or longer.
+- **Quality cutoffs (Q15, Q20, Q25, etc.)**: Percentages of reads exceeding each quality threshold.
+
+Use this to confirm if samples are of sufficient quality for downstream ITS analysis.
+
+
+### Taxonomic Classification (EMU via GermGenie)
+
+Each sample outputs a `.tsv` file with predicted taxa and relative abundances. Important columns:
+
+- `tax_id` – NCBI Taxonomy ID
+- `abundance` – Relative abundance (0–1 scale)
+- `superkingdom`, `phylum`, `class`, `genus`, `species` – Taxonomic classification
+
+**Example Interpretation**:
+
+If `Candida albicans` appears with an abundance of `0.77`, this indicates dominant presence. Secondary hits (e.g. <0.05) may reflect background or contamination.
+
+EMU uses a prebuilt UNITE-based fungal ITS database, so accuracy depends on database coverage.
+
+
+
+### ITS Region Extraction (ITSx)
+
+ITSx extracts the ITS1 and ITS2 regions from consensus FASTA sequences.
+
+For each sample, the tool outputs:
+
+- `*.ITS1.fasta` – Extracted ITS1 region
+- `*.ITS2.fasta` – Extracted ITS2 region
+- `.summary.txt`, `.log` – Summary and processing logs
+
+Presence of both ITS1 and ITS2 suggests complete and usable ITS region extraction for BLAST identification.
+
+---
+
+### BLAST Results (ITS1 & ITS2)
+
+BLAST results (`*.blast.txt`) are formatted in tabular form (outfmt 6) and include:
+
+| Column | Description                |
+|--------|----------------------------|
+| 1      | Query sequence ID          |
+| 2      | Matched subject ID         |
+| 3      | % Identity                 |
+| 4      | Alignment length           |
+| 11     | E-value                    |
+| 12     | Bit score                  |
+
+**Interpretation Guidelines**:
+
+- **% Identity** ≥ 97–100% indicates strong species-level match.
+- **Low E-value** (e.g. `7.22e-42`) confirms statistical significance.
+- **Taxon names** in hit descriptions guide fungal species assignment (e.g. *Candida parapsilosis*).
+
+
+
+### Mapping Specificity (Minimap2 + Samtools)
+
+Mapping specificity is calculated as:
+( Number of reads mapped to ITS region / Total mapped reads ) × 100
+
+This is done with:
+```bash
+# Reads mapped to ITS region (coordinates in BED)
+samtools view -b -F 4 -L region.bed sorted.bam | samtools fastq | awk 'END {print NR/4}'
+
+# Total mapped reads
+samtools view -b -F 4 sorted.bam | samtools fastq | awk 'END {print NR/4}'
+```
+
+A high percentage (e.g. >80%) suggests accurate and specific amplification of the fungal ITS region.
+Low values may indicate poor primer performance, low-quality reads, or wrong reference genomes.
