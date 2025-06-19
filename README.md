@@ -12,9 +12,9 @@ This study was initiated in order to investigate whether Nanopore sequencing of 
 - [Materials](#materials)
 - [Implementation](#implementation)
   - [Preprocessing: Read Filtering & Quality Control](#preprocessing-read-filtering--quality-control)
-  - [Sub-Workflow 1: GermGenie](#sub-workflow-1-germgenie)
-  - [Sub-Workflow 2: Consensus-Based Identification](#sub-workflow-2-consensus-based-identification)
-  - [Sub-Workflow 3: Mapping & Specificity](#sub-workflow-3-mapping--specificity)
+  - [Sub-Workflow 1: Mapping & Specificity](#sub-workflow-3-mapping--specificity)
+  - [Sub-Workflow 2: GermGenie](#sub-workflow-2-germgenie)
+  - [Sub-Workflow 3: Consensus-Based Identification](#sub-workflow-2-consensus-based-identification)
 - [Output Structure](#output-structure)
 - [Interpretation of Results](#interpretation-of-results)
 - [Acknowledgements](#acknowledgements)
@@ -66,6 +66,9 @@ The following software tools, platforms, and databases were used to build and ru
 
 Before running any identification workflow, raw Nanopore reads are filtered and quality-checked using `NanoPlot` and `Filtlong`.  
 All project data is stored in the `project_data/` directory, containing raw FASTQ files from 10 PCR-amplified clinical fungal isolates.
+
+All commands are executed from the following working directory: /mnt/studentfiles/2025/2025MBI06.
+
 
 ### Installation
 
@@ -120,19 +123,67 @@ Results are saved in a separate folder for each barcode inside the same output d
 
 ```bash
 # Set the folder where the filtered FASTQ files are stored
-INPUT_DIR="filtlong_samples"
+map="filtlong_samples"
 
 # Go through all filtered FASTQ files
-for file in "$INPUT_DIR"/barcode*_filtered.fastq; do
+for file in "$map"/barcode*_filtered.fastq; do
     # Get the barcode name (like barcode01)
     barcode=$(basename "$file" | cut -d'_' -f1)
 
     # Create a folder to save the plots
-    mkdir -p "$INPUT_DIR/$barcode"
+    mkdir -p "$map/$barcode"
 
     # Run NanoPlot on the file and save output
-    NanoPlot --fastq "$file" --outdir "$INPUT_DIR/$barcode" --plots hex dot --loglength --N50
+    NanoPlot --fastq "$file" --outdir "$map/$barcode" --plots hex dot --loglength --N50
 done
 ```
 
+## Sub-Workflow 1: Mapping & Specificity
 
+This workflow evaluates how specifically each sample maps to the correct fungal species and to the annotated ITS region of that species.
+
+It uses:
+- `minimap2` to align reads to fungal reference genomes
+- `samtools` to convert and process the alignment files
+- `bedtools intersect` to determine which reads overlap with annotated ITS regions
+
+All commands are executed from the following working directory: /mnt/studentfiles/2025/2025MBI06.
+
+
+### Reference Genomes
+
+Fungal reference genome files were downloaded from NCBI and pre-unzipped before running this step. Each clinical isolate (barcode01–barcode10) was assigned a matching `.fna` reference genome, stored in the `All_fna/` folder.
+
+Examples:
+- `barcode01 -> c_albicans_genomic.fna`
+- `barcode02 -> c_neofromans_genomic.fna`
+- ...
+- `barcode10 -> m_pachydermatis_genomic.fna`
+
+### Installation
+
+Install all required tools in a dedicated Conda environment:
+
+```bash
+conda create -n mapping_env minimap2 samtools bedtools -c bioconda -c conda-forge
+conda activate mapping_env
+```
+
+### Mapping Reads to Reference Genomes
+
+Create a folder for the mapping results:
+
+```bash
+mkdir -p Minimap_samples
+```
+Then map each sample to its corresponding reference genome. Example for barcode01:
+```bash
+minimap2 -ax map-ont All_fna/c_albicans_genomic.fna project_data/2425-008_barcode01.fastq > Minimap_samples/barcode01_c_albicans.sam
+```
+
+---
+
+### Convert and Sort Alignment Files with Samtools
+
+Each `.sam` file from the `minimap_samples/` folder was converted to `.bam`, sorted, and indexed.  
+The sorted files were stored in a subfolder called `sorted_bam/`, located inside `minimap_samples/`.
