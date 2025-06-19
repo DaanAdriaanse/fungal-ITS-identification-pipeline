@@ -316,6 +316,8 @@ emu abundance /filtlong_samples_70/barcode01_filtered.fastq \
 ```
 Repeat this step for each filtered sample.
 
+---
+
 ## Sub-Workflow 3: Consensus-Based Identification
 
 This sub-workflow focuses on generating consensus sequences from Nanopore amplicons, using either *de novo* assembly or reference-guided variant calling. The goal is to reconstruct accurate ITS regions for downstream tools such as ITSx and BLAST, which require FASTA input.
