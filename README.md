@@ -27,6 +27,7 @@ This pipeline processes Nanopore long-read data from PCR-amplified ITS regions u
 
 - Direct ITS classification via GermGenie
 - Consensus-based taxonomic identification (ITSx + BLAST)
+- Convert fasta for taxonomic identification (ITSx + BLAST)
 - Mapping and specificity assessment using Minimap2 and Samtools
 
 Each step supports downstream analysis for high-quality Fungal isolates.
