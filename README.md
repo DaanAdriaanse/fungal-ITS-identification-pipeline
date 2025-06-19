@@ -26,8 +26,7 @@ This study was initiated in order to investigate whether Nanopore sequencing of 
 This pipeline processes Nanopore long-read data from PCR-amplified ITS regions using three distinct subworkflows:
 
 - Direct ITS classification via GermGenie
-- Consensus-based taxonomic identification (ITSx + BLAST)
-- Convert fasta for taxonomic identification (ITSx + BLAST)
+- Consensus-based/convertfasta-based taxonomic identification (ITSx + BLAST)
 - Mapping and specificity assessment using Minimap2, Samtools + bedtools
 
 Each step supports downstream analysis for high-quality Fungal isolates.
