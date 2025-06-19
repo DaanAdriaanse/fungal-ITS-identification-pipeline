@@ -11,6 +11,7 @@ This study was initiated in order to investigate whether Nanopore sequencing of 
 - [Overview](#overview)
 - [Materials](#materials)
 - [Implementation](#implementation)
+  - [Preprocessing: Read Filtering & Quality Control](#preprocessing-read-filtering--quality-control)
   - [Sub-Workflow 1: GermGenie](#sub-workflow-1-germgenie)
   - [Sub-Workflow 2: Consensus-Based Identification](#sub-workflow-2-consensus-based-identification)
   - [Sub-Workflow 3: Mapping & Specificity](#sub-workflow-3-mapping--specificity)
@@ -58,4 +59,24 @@ The following software tools, platforms, and databases were used to build and ru
 - **Asgard** – HPC/cloud platform used to run workflows and heavy analyses  
 - **Conda** – for environment and package management  
 - **Nextflow** – to execute the `wf-amplicon` pipeline
+
+---
+
+## Preprocessing: Read Filtering & Quality Control
+
+Before running any identification workflow, raw Nanopore reads are filtered and quality-checked using `NanoPlot` and `Filtlong`.
+
+### Installation
+
+Create a dedicated conda environment for QC tools:
+```bash
+conda create -n QC_env nanoplot filtlong -c bioconda -c conda-forge
+conda activate QC_env
+
+### Step 1 – Visualize Raw Reads with NanoPlot
+```bash
+for file in *.fastq; do
+    name="${file%.fastq}"
+    NanoPlot --fastq "$file" --outdir "plots_$name" --loglength --N50
+done
 
