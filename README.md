@@ -12,9 +12,9 @@ This study was initiated in order to investigate whether Nanopore sequencing of 
 - [Materials](#materials)
 - [Implementation](#implementation)
   - [Preprocessing: Read Filtering & Quality Control](#preprocessing-read-filtering--quality-control)
-  - [Sub-Workflow 1: Mapping & Specificity](#sub-workflow-3-mapping--specificity)
+  - [Sub-Workflow 1: Mapping & Specificity](#sub-workflow-1-mapping--specificity)
   - [Sub-Workflow 2: GermGenie](#sub-workflow-2-germgenie)
-  - [Sub-Workflow 3: Consensus-Based Identification](#sub-workflow-2-consensus-based-identification)
+  - [Sub-Workflow 3: Consensus-Based/convertfasta-based Identification](#sub-workflow-3-consensus-based-identification)
 - [Output Structure](#output-structure)
 - [Interpretation of Results](#interpretation-of-results)
 - [Acknowledgements](#acknowledgements)
@@ -44,7 +44,7 @@ The following software tools, platforms, and databases were used to build and ru
 - `wf-amplicon` – for variant-based and de novo consensus workflows  
 - `seqtk` – for FASTQ to FASTA conversion  
 - `ITSx` – for extraction of ITS1 and ITS2 regions from consensus FASTA  
-- `BLAST+` – for fungal species identification against UNITE  
+- `BLAST+` – for fungal species identification against UNITE and primer blast against reference genome. 
 - `Minimap2` – for aligning reads to fungal reference genomes  
 - `Samtools` – for BAM processing and calculation of mapped read counts via `samtools view`  
 - `Bedtools intersect` – for determining overlap of mapped reads with annotated ITS regions (PCR specificity)
@@ -102,15 +102,15 @@ done
 To remove low-quality and short Nanopore reads, we used `Filtlong` to retain only high-quality sequences.  
 Each `.fastq` file (one per clinical isolate) was filtered with a minimum read length of 1000 bp, keeping only the top 70% of reads.
 
-Filtered files were saved to the directory: `filtlong_samples/`.
+Filtered files were saved to the directory: `filtlong_samples_70/`.
 
 ```bash
-filtlong --min_length 1000 --keep_percent 70 project_data/2425-008_barcodeXX.fastq > filtlong_samples/barcodeXX_filtered.fastq
+filtlong --min_length 1000 --keep_percent 70 project_data/2425-008_barcodeXX.fastq > filtlong_samples_70/barcodeXX_filtered.fastq
 ```
 Replace XX with the barcode number (01 to 10).
 For example:
 ```bash
-filtlong --min_length 1000 --keep_percent 70 project_data/2425-008_barcode01.fastq > filtlong_samples/barcode01_filtered.fastq
+filtlong --min_length 1000 --keep_percent 70 project_data/2425-008_barcode01.fastq > filtlong_samples_70/barcode01_filtered.fastq
 ```
 > **Note:**  
 > We tested filtering at different thresholds (`--keep_percent 70`, `60`, and `50`).  
@@ -123,7 +123,7 @@ Results are saved in a separate folder for each barcode inside the same output d
 
 ```bash
 # Set the folder where the filtered FASTQ files are stored
-map="filtlong_samples"
+map="filtlong_samples_70"
 
 # Go through all filtered FASTQ files
 for file in "$map"/barcode*_filtered.fastq; do
@@ -304,9 +304,42 @@ cd ${EMU_DATABASE_DIR}
 # Create new foler
 mkdir -p emu_results
 # Example: classify reads from barcode01
-emu abundance /filtlong_samples/barcode01_filtered.fastq \
+emu abundance /filtlong_samples_70/barcode01_filtered.fastq \
   --db $EMU_DATABASE_DIR \
   --output-dir ./emu_results/barcode01
 ```
 Repeat this step for each filtered sample.
+
+## Sub-Workflow 3: Consensus-Based Identification
+
+This sub-workflow focuses on generating consensus sequences from the Nanopore amplicons, either via *de novo* assembly or reference-guided variant calling. The goal is to reconstruct the fungal ITS regions for more accurate identification.
+
+It includes three main strategies:
+- `Flye` assembly of filtered reads (de novo)
+- `wf-amplicon` using both *de novo* and *variant calling* modes
+- Conversion of filtered `.fastq` files to `.fasta` for ITSx
+
+All commands are executed from the working directory:  
+`/mnt/studentfiles/2025/2025MBI06`
+
+---
+
+### Flye Assembly and Visualization
+### Install Flye
+
+```bash
+conda create -n flye_env -c bioconda -c conda-forge flye
+conda activate flye_env
+```
+
+### Run Flye for All Barcodes with filtered reads (70%)
+Assemble filtered reads (70%) from Filtlong
+
+```bash
+for i in $(seq -w 1 10); do
+    flye \
+      --nano-raw "filtlong_samples_70/barcode${i}_filtered.fastq" \
+      --out-dir "./ITSflye/barcode${i}" \
+      --threads 8
+```
 
