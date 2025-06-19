@@ -320,9 +320,8 @@ This two-step process was applied to all clinical isolate samples:
 
 This provides a compact overview of where reads are mapping in the reference genome 
 ### BEDTOOLS: Convert BAM to BED
-Example: Candida albicans
-
 ```bash
+# Example: Candida albicans
 mkdir -n bedtools_bamtobed
 
 bedtools bamtobed -i minimap_samples/sorted_bam/barcode01_c_albicans_genomic.sorted.bam \
@@ -331,8 +330,8 @@ bedtools bamtobed -i minimap_samples/sorted_bam/barcode01_c_albicans_genomic.sor
 > Repeat this step for each barcode.
 
 ### BEDTOOLS: Merge Mapped Read Regions
-Example: Candida albicans
 ```bash
+# Example: Candida albicans
 mkdir -n bedtools_merge
 
 bedtools merge -i bedtools_bamtobed/albicans_reads.bed \
