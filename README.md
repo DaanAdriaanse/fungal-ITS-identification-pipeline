@@ -99,17 +99,40 @@ done
 To remove low-quality and short Nanopore reads, we used `Filtlong` to retain only high-quality sequences.  
 Each `.fastq` file (one per clinical isolate) was filtered with a minimum read length of 1000 bp, keeping only the top 70% of reads.
 
-Filtered files were saved to the directory: `filtlong_samples_1000_70/`.
+Filtered files were saved to the directory: `filtlong_samples/`.
 
 ```bash
-filtlong --min_length 1000 --keep_percent 70 project_data/2425-008_barcodeXX.fastq > filtlong_samples_1000_70/barcodeXX_filtered.fastq
+filtlong --min_length 1000 --keep_percent 70 project_data/2425-008_barcodeXX.fastq > filtlong_samples/barcodeXX_filtered.fastq
 ```
 Replace XX with the barcode number (01 to 10).
 For example:
 ```bash
-filtlong --min_length 1000 --keep_percent 70 project_data/2425-008_barcode01.fastq > filtlong_samples_1000_70/barcode01_filtered.fastq
+filtlong --min_length 1000 --keep_percent 70 project_data/2425-008_barcode01.fastq > filtlong_samples/barcode01_filtered.fastq
 ```
 > **Note:**  
 > We tested filtering at different thresholds (`--keep_percent 70`, `60`, and `50`).  
 > Based on read quality and yield, we continued all downstream analyses using the 70% filtered datasets.
+
+### Visualize Filtered Reads with NanoPlot
+
+After filtering, each `.fastq` file is visualized using `NanoPlot`.  
+Results are saved in a separate folder for each barcode inside the same output directory.
+
+```bash
+# Set the folder where the filtered FASTQ files are stored
+INPUT_DIR="filtlong_samples"
+
+# Go through all filtered FASTQ files
+for file in "$INPUT_DIR"/barcode*_filtered.fastq; do
+    # Get the barcode name (like barcode01)
+    barcode=$(basename "$file" | cut -d'_' -f1)
+
+    # Create a folder to save the plots
+    mkdir -p "$INPUT_DIR/$barcode"
+
+    # Run NanoPlot on the file and save output
+    NanoPlot --fastq "$file" --outdir "$INPUT_DIR/$barcode" --plots hex dot --loglength --N50
+done
+```
+
 
