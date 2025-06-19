@@ -126,7 +126,7 @@ All commands are executed from the following working directory: /mnt/studentfile
 
 ### Installation
 
-Create a dedicated conda environment for QC tools:
+Create conda environment for QC tools:
 ```bash
 conda create -n QC_env nanoplot filtlong bedtools -c bioconda -c conda-forge
 conda activate QC_env
@@ -222,7 +222,7 @@ Examples:
 
 ### Installation
 
-Install all required tools in a dedicated Conda environment:
+Install all required tools in a Conda environment:
 
 ```bash
 conda create -n mapping_env minimap2 samtools blastn -c bioconda -c conda-forge
@@ -370,7 +370,7 @@ tar -xvzf sh_general_release.tgz
 tar -xvzf sh_general_release.tar
 ```
 
-### Create a dedicated Conda environment for EMU and activate the environment
+### Create a Conda environment for EMU and activate the environment
 ```bash
 conda create -n emu_env -c bioconda -c conda-forge emu
 conda activate emu_env
@@ -579,7 +579,7 @@ done
 --- 
 
 ## Output Structure
-Each sub-workflow produces its own organized set of results, stored in dedicated directories per sample (barcode01 to barcode10). Below is an overview of the key output folders:
+Each sub-workflow produces its own organized set of results, stored in directories per sample (barcode01 to barcode10). Below is an overview of the key output folders:
 
 ### Preprocessing
 
