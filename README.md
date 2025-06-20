@@ -237,9 +237,9 @@ Create a folder for the mapping results:
 ```bash
 mkdir -p Minimap_samples
 ```
-Then map each sample to its corresponding reference genome. Example for barcode01:
+Then map each sample to its corresponding reference genome using Minimap2 and the custom settings: k-mer size = 15 and minimizer window size = 10. Example for barcode01:
 ```bash
-minimap2 -ax map-ont All_fna/c_albicans_genomic.fna project_data/2425-008_barcode01.fastq > Minimap_samples/barcode01_c_albicans.sam
+minimap2 -ax map-ont -k 15 -w 10 All_fna/c_albicans_genomic.fna project_data/2425-008_barcode01.fastq > Minimap_samples/barcode01_c_albicans.sam
 ```
 
 ### Convert and Sort Alignment Files with Samtools
@@ -266,8 +266,7 @@ Repeat these three commands for each barcode (barcode01 to barcode10), updating 
 
 ### Primer-to-Genome BLAST Search
 
-To verify where primers bind in the fungal genomes, each primer was aligned against each `.fna` reference genome using `blastn`.
-This step helps determine expected amplicon positions for alignment validation and extraction.
+To verify where primers bind in the fungal genomes, each primer was aligned against each .fna reference genome using blastn with word size 22 and output format 6 (tabular). This step helps determine expected amplicon positions for alignment validation.
 
 Prepare Primer FASTA File
 
@@ -309,7 +308,7 @@ To evaluate how specifically reads map to their expected fungal ITS regions, we 
 This was done using samtools view in combination with primer coordinates (from BLAST) stored in .bed files. Read counts were obtained by converting BAM output to FASTQ and dividing the number of lines by 4.
 
 The percentage is calculated using the formula:
-( number of reads in ITS region / total number of mapped reads ) × 100.
+( number of reads in ITS region(s) / total number of mapped reads ) × 100.
 
 ```bash
 # Example for Barcode 01 (Candida albicans)
@@ -444,6 +443,8 @@ done
 wf-amplicon was used to reconstruct amplicons either:
 - Without a reference (de novo mode)
 - Using an ITS-region reference (variant calling mode), Reference FASTA files were extracted from the expected ITS regions of each fungal genome using BLAST coordinates. These reference files were stored in the chromosome/ directory.
+
+In both modes, different filtering settings were tested; however, they did not affect the output. Therefore, the default values were retained: reads shorter than 300 bp were discarded (min_read_length = 300), reads with an average quality below Q10 were excluded (min_read_qual = 10), and samples with fewer than 40 reads were skipped entirely (min_n_reads = 40).
 
 #### wf-amplicon installation
 ```bash
